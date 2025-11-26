@@ -1,60 +1,84 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="gradient-bg min-vh-100 d-flex align-items-center">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="card card-custom">
-                    <div class="card-body p-5">
-                        <div class="text-center mb-4">
-                            <i class="fas fa-comments fa-3x text-primary mb-3"></i>
-                            <h2 class="card-title fw-bold">سامانه پیام‌رسانی</h2>
-                            <p class="text-muted">ارسال و دریافت پیام‌های خصوصی</p>
-                        </div>
-                        
-                        <form method="POST" action="{{ url_for('index') }}">
-                            <div class="mb-3">
-                                <label for="name" class="form-label fw-bold">
-                                    <i class="fas fa-user me-1"></i>نام کامل
-                                </label>
-                                <input type="text" class="form-control form-control-lg" id="name" name="name" 
-                                       placeholder="نام و نام خانوادگی خود را وارد کنید" required>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label for="phone" class="form-label fw-bold">
-                                    <i class="fas fa-phone me-1"></i>شماره تلفن
-                                </label>
-                                <input type="tel" class="form-control form-control-lg" id="phone" name="phone" 
-                                       placeholder="مثال: 09123456789" required>
-                                <div class="form-text">شماره تلفن شما به عنوان شناسه ورود استفاده می‌شود</div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold py-2">
-                                <i class="fas fa-sign-in-alt me-2"></i>ورود به سامانه
-                            </button>
-                        </form>
-                        
-                        <div class="text-center mt-4">
-                            <hr>
-                            <a href="{{ url_for('admin_login') }}" class="btn btn-outline-warning btn-sm">
-                                <i class="fas fa-cog me-1"></i>ورود مدیران سیستم
-                            </a>
-                        </div>
-
-                        <div class="mt-4 p-3 bg-light rounded">
-                            <h6 class="fw-bold">📋 راهنمای استفاده:</h6>
-                            <ul class="small text-muted mb-0">
-                                <li>برای استفاده از سامانه، نام و شماره تلفن خود را وارد کنید</li>
-                                <li>شناسه کاربری منحصر به فرد برای شما ایجاد می‌شود</li>
-                                <li>می‌توانید برای سایر کاربران پیام ارسال کنید</li>
-                            </ul>
-                        </div>
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واتساپ - ورود</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #00a884;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-container {
+            background: white;
+            border-radius: 3px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+        .login-header {
+            background: #00a884;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .login-body {
+            padding: 30px;
+        }
+        .btn-whatsapp {
+            background: #00a884;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-weight: 500;
+        }
+        .btn-whatsapp:hover {
+            background: #008f74;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fab fa-whatsapp fa-3x mb-3"></i>
+            <h4>واتساپ وب</h4>
+        </div>
+        <div class="login-body">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
+                {% endfor %}
+            {% endwith %}
+            
+            <form method="POST" action="/login">
+                <div class="mb-3">
+                    <label class="form-label">نام شما</label>
+                    <input type="text" name="name" class="form-control" placeholder="نام و نام خانوادگی" required>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">شماره تلفن</label>
+                    <input type="tel" name="phone" class="form-control" placeholder="09123456789" required>
+                </div>
+                <button type="submit" class="btn btn-whatsapp w-100">ورود به واتساپ</button>
+            </form>
+            
+            <div class="text-center mt-3">
+                <a href="/admin_login" class="text-muted small">ورود مدیران</a>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
