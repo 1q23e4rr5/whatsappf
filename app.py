@@ -110,7 +110,7 @@ def login():
         existing_user.last_seen = datetime.utcnow()
         db.session.commit()
         
-        flash(f'خوش آمدید {existing_user.name}!', 'success')
+        flash(f'خوش آمدید {existing_user.name}! شناسه شما: {existing_user.user_id}', 'success')
     else:
         # کاربر جدید
         user_id = secrets.token_hex(5).upper()
@@ -122,7 +122,9 @@ def login():
             session['user_id'] = user_id
             session['name'] = name
             session['is_admin'] = False
-            flash('حساب کاربری جدید ایجاد شد!', 'success')
+            
+            # نمایش شناسه کاربری جدید به کاربر
+            flash(f'حساب کاربری جدید ایجاد شد! شناسه شما: {user_id} - لطفاً این شناسه را ذخیره کنید', 'success')
         except Exception as e:
             db.session.rollback()
             flash('خطا در ایجاد حساب کاربری', 'error')
@@ -219,12 +221,40 @@ def chat_page(other_user_id):
     # اطلاعات کاربر مقابل
     other_user = User.query.filter_by(user_id=other_user_id).first()
     
+    # دریافت لیست چت‌ها برای سایدبار
+    user_chats = Chat.query.filter(
+        (Chat.user1_id == user_id) | (Chat.user2_id == user_id)
+    ).all()
+    
+    chats_data = []
+    for user_chat in user_chats:
+        chat_other_user_id = user_chat.get_other_user(user_id)
+        chat_other_user = User.query.filter_by(user_id=chat_other_user_id).first()
+        
+        if chat_other_user:
+            last_msg = Message.query.filter_by(chat_id=user_chat.id).order_by(Message.timestamp.desc()).first()
+            unread_count = Message.query.filter_by(chat_id=user_chat.id, sender_id=chat_other_user_id, read=False).count()
+            
+            chats_data.append({
+                'chat_id': user_chat.id,
+                'other_user': chat_other_user.to_dict(),
+                'last_message': {
+                    'content': last_msg.content if last_msg else 'شروع گفتگو',
+                    'timestamp': last_msg.timestamp.strftime('%H:%M') if last_msg else '',
+                    'is_me': last_msg.sender_id == user_id if last_msg else False
+                },
+                'unread_count': unread_count
+            })
+    
+    chats_data.sort(key=lambda x: x['last_message']['timestamp'] if x['last_message']['timestamp'] else '', reverse=True)
+    
     return render_template('chat.html',
                          user_name=session['name'],
                          user_id=session['user_id'],
                          other_user=other_user.to_dict(),
                          messages=messages,
-                         chat_id=chat.id)
+                         chat_id=chat.id,
+                         chats=chats_data)
 
 # API برای ارسال پیام
 @app.route('/api/send_message', methods=['POST'])
