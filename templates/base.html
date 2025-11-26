@@ -18,6 +18,10 @@
             border: none;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        .card-custom:hover {
+            transform: translateY(-2px);
         }
         .message-item {
             border-right: 4px solid #667eea;
@@ -25,10 +29,14 @@
         }
         .message-item:hover {
             transform: translateX(-5px);
+            background-color: #f8f9fa;
         }
         .unread {
             background-color: #f0f8ff;
             border-right-color: #28a745;
+        }
+        .navbar-brand {
+            font-weight: 600;
         }
     </style>
 </head>
@@ -39,6 +47,7 @@
             <div class="container mt-3">
                 {% for category, message in messages %}
                     <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }} alert-dismissible fade show">
+                        <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' if category == 'success' else 'info-circle' }} me-2"></i>
                         {{ message }}
                         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
@@ -48,6 +57,24 @@
     {% endwith %}
 
     {% block content %}{% endblock %}
+
+    <!-- فوتر -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>📱 سامانه پیام‌رسانی</h6>
+                    <p class="mb-0 text-muted">ارسال و دریافت پیام‌های خصوصی بین کاربران</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">
+                        <i class="fas fa-code me-1"></i>
+                        توسعه داده شده با Flask
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
