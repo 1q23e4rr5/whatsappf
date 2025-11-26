@@ -4,21 +4,25 @@ from datetime import datetime, timezone
 import secrets
 import os
 from functools import wraps
-import logging
-
-# تنظیمات logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', '').replace('postgres://', 'postgresql://')
+
+# تنظیم دیتابیس برای Render
+database_url = os.environ.get('DATABASE_URL')
+if database_url:
+    if database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql://', 1)
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///whatsapp.db'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['PERMANENT_SESSION_LIFETIME'] = 3600 * 24 * 7  # 7 days
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600 * 24 * 7
 
 db = SQLAlchemy(app)
 
-# اطلاعات لاگین ادمین - تغییر دهید!
+# اطلاعات لاگین ادمین
 ADMIN_USERNAME = os.environ.get('ADMIN_USERNAME', 'admin')
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'GlobalAdmin2024!')
 
@@ -59,7 +63,6 @@ class Message(db.Model):
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     read = db.Column(db.Boolean, default=False)
-    message_type = db.Column(db.String(20), default='text')
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -72,9 +75,9 @@ class Contact(db.Model):
 with app.app_context():
     try:
         db.create_all()
-        logger.info("✅ Database tables created successfully")
+        print("✅ Database tables created successfully")
     except Exception as e:
-        logger.error(f"❌ Database creation error: {str(e)}")
+        print(f"❌ Database creation error: {str(e)}")
 
 # دکوراتور برای دسترسی ادمین
 def admin_required(f):
@@ -132,7 +135,6 @@ def login():
             db.session.commit()
             
             flash(f'خوش آمدید {existing_user.name}! شناسه شما: {existing_user.user_id}', 'success')
-            logger.info(f"User logged in: {existing_user.name} ({existing_user.user_id})")
         else:
             # کاربر جدید
             user_id = secrets.token_hex(5).upper()
@@ -151,11 +153,9 @@ def login():
             session['is_admin'] = False
             
             flash(f'حساب کاربری جدید ایجاد شد! شناسه شما: {user_id} - لطفاً این شناسه را ذخیره کنید', 'success')
-            logger.info(f"New user registered: {name} ({user_id})")
             
     except Exception as e:
         db.session.rollback()
-        logger.error(f"Login error: {str(e)}")
         flash('خطا در ورود به سیستم', 'error')
         return redirect('/')
     
@@ -216,7 +216,6 @@ def chats():
                              chats=chats_data)
                              
     except Exception as e:
-        logger.error(f"Chats page error: {str(e)}")
         flash('خطا در بارگذاری چت‌ها', 'error')
         return redirect('/')
 
@@ -301,7 +300,6 @@ def chat_page(other_user_id):
                              chats=chats_data)
                              
     except Exception as e:
-        logger.error(f"Chat page error: {str(e)}")
         flash('خطا در بارگذاری چت', 'error')
         return redirect('/chats')
 
@@ -340,8 +338,6 @@ def send_message():
         db.session.add(new_message)
         db.session.commit()
         
-        logger.info(f"Message sent: {user_id} -> {other_user_id}")
-        
         return jsonify({
             'success': True,
             'message': {
@@ -356,7 +352,6 @@ def send_message():
         
     except Exception as e:
         db.session.rollback()
-        logger.error(f"Send message error: {str(e)}")
         return jsonify({'success': False, 'message': 'خطا در ارسال پیام'})
 
 @app.route('/api/get_new_messages/<int:chat_id>')
@@ -391,7 +386,6 @@ def get_new_messages(chat_id):
         return jsonify({'success': True, 'messages': messages_data})
         
     except Exception as e:
-        logger.error(f"Get messages error: {str(e)}")
         return jsonify({'success': False, 'message': 'خطا در دریافت پیام‌ها'})
 
 @app.route('/api/search_user')
@@ -414,7 +408,6 @@ def search_user():
         return jsonify({'success': True, 'users': users_data})
         
     except Exception as e:
-        logger.error(f"Search user error: {str(e)}")
         return jsonify({'success': False, 'message': 'خطا در جستجو'})
 
 @app.route('/start_chat', methods=['POST'])
@@ -456,11 +449,9 @@ def start_chat():
                 db.session.add(contact)
                 db.session.commit()
         
-        logger.info(f"Chat started: {user_id} -> {other_user_id}")
         return redirect(f'/chat/{other_user_id}')
         
     except Exception as e:
-        logger.error(f"Start chat error: {str(e)}")
         flash('خطا در شروع چت', 'error')
         return redirect('/chats')
 
@@ -476,11 +467,9 @@ def admin_login():
             session['is_admin'] = True
             session.permanent = True
             flash('ورود به پنل مدیریت موفقیت‌آمیز بود', 'success')
-            logger.info("Admin logged in successfully")
             return redirect('/admin_dashboard')
         else:
             flash('نام کاربری یا رمز عبور اشتباه است', 'error')
-            logger.warning(f"Failed admin login attempt: {username}")
     
     return render_template('admin_login.html')
 
@@ -513,7 +502,6 @@ def admin_dashboard():
                              stats=stats)
                              
     except Exception as e:
-        logger.error(f"Admin dashboard error: {str(e)}")
         flash('خطا در بارگذاری پنل مدیریت', 'error')
         return render_template('admin_dashboard.html', users=[], messages=[], chats=[], stats={})
 
@@ -534,13 +522,11 @@ def delete_user(user_id):
             db.session.commit()
             
             flash(f'کاربر {user_info} با موفقیت حذف شد', 'success')
-            logger.info(f"Admin deleted user: {user_info}")
         else:
             flash('کاربر یافت نشد', 'error')
     
     except Exception as e:
         db.session.rollback()
-        logger.error(f"Delete user error: {str(e)}")
         flash(f'خطا در حذف کاربر: {str(e)}', 'error')
     
     return redirect('/admin_dashboard')
@@ -555,9 +541,8 @@ def logout():
                 user.last_seen = datetime.now(timezone.utc)
                 user.is_online = False
                 db.session.commit()
-                logger.info(f"User logged out: {user.name} ({user.user_id})")
     except Exception as e:
-        logger.error(f"Logout error: {str(e)}")
+        pass
     
     session.clear()
     return redirect('/')
@@ -582,17 +567,6 @@ def update_online_status():
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False})
-
-# خطای 404
-@app.errorhandler(404)
-def not_found(error):
-    return render_template('404.html'), 404
-
-# خطای 500
-@app.errorhandler(500)
-def internal_error(error):
-    db.session.rollback()
-    return render_template('500.html'), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
