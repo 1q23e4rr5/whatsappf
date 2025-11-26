@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>واتساپ - چت با {{ other_user.name }}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: #111b21;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e9edef;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar {
+            background: #202c33;
+            border-right: 1px solid #2a3942;
+            height: 100vh;
+        }
+        .chat-area {
+            background: #0b141a;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-header {
+            background: #202c33;
+            padding: 10px 16px;
+            border-bottom: 1px solid #2a3942;
+        }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23142129' fill-opacity='0.4' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+        .chat-input {
+            background: #202c33;
+            padding: 16px;
+            border-top: 1px solid #2a3942;
+        }
+        .message {
+            max-width: 65%;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 7.5px;
+            position: relative;
+            word-wrap: break-word;
+        }
+        .message-sent {
+            background: #005c4b;
+            margin-left: auto;
+            margin-right: 0;
+            border-top-right-radius: 0;
+        }
+        .message-received {
+            background: #202c33;
+            margin-right: auto;
+            margin-left: 0;
+            border-top-left-radius: 0;
+        }
+        .message-time {
+            font-size: 0.6875rem;
+            color: #8696a0;
+            text-align: left;
+            margin-top: 4px;
+        }
+        .message-sent .message-time {
+            text-align: right;
+        }
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #00a884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .chat-item {
+            border-bottom: 1px solid #2a3942;
+            padding: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .chat-item:hover {
+            background: #2a3942;
+        }
+        .chat-avatar {
+            width: 49px;
+            height: 49px;
+            border-radius: 50%;
+            background: #00a884;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        .unread-badge {
+            background: #00a884;
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            min-width: 20px;
+            text-align: center;
+        }
+        .search-box {
+            background: #202c33;
+            border: none;
+            color: #e9edef;
+        }
+        .search-box:focus {
+            background: #2a3942;
+            color: #e9edef;
+            box-shadow: none;
+        }
+        .message-input {
+            background: #2a3942;
+            border: none;
+            color: #e9edef;
+            border-radius: 8px;
+        }
+        .message-input:focus {
+            background: #2a3942;
+            color: #e9edef;
+            box-shadow: none;
+        }
+        .send-btn {
+            background: #00a884;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+        .chat-list {
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid h-100">
+        <div class="row h-100">
+            <!-- سایدبار چت‌ها -->
+            <div class="col-md-4 col-lg-3 sidebar p-0">
+                <!-- هدر کاربر -->
+                <div class="header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar me-3">
+                            {{ user_name[0] }}
+                        </div>
+                        <div>
+                            <div class="fw-bold">{{ user_name }}</div>
+                            <small class="text-success">آنلاین</small>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/logout" class="btn btn-sm btn-outline-light">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- جستجو و چت جدید -->
+                <div class="p-3">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control search-box" placeholder="جستجو یا شروع چت جدید" id="searchInput">
+                        <button class="btn btn-outline-secondary" type="button" style="border-color: #2a3942; color: #8696a0;">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- فرم شروع چت جدید -->
+                    <form method="POST" action="/start_chat" class="d-flex mb-3">
+                        <input type="text" name="user_id" class="form-control search-box me-2" placeholder="شناسه کاربری" required>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- لیست چت‌ها -->
+                <div class="chat-list">
+                    {% for chat in chats %}
+                    <div class="chat-item d-flex align-items-center" onclick="location.href='/chat/{{ chat.other_user.user_id }}'">
+                        <div class="chat-avatar me-3">
+                            {{ chat.other_user.name[0] }}
+                        </div>
+                        <div class="chat-info">
+                            <div class="chat-name">{{ chat.other_user.name }}</div>
+                            <div class="chat-last-message">
+                                {% if chat.last_message.is_me %}
+                                    شما: {{ chat.last_message.content }}
+                                {% else %}
+                                    {{ chat.last_message.content }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-end">
+                            <div class="chat-time">{{ chat.last_message.timestamp }}</div>
+                            {% if chat.unread_count > 0 %}
+                            <div class="unread-badge mt-1">{{ chat.unread_count }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- ناحیه چت -->
+            <div class="col-md-8 col-lg-9 chat-area p-0">
+                <!-- هدر چت -->
+                <div class="chat-header d-flex align-items-center">
+                    <a href="/chats" class="btn btn-link text-light me-2 d-md-none">
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <div class="user-avatar me-3">
+                        {{ other_user.name[0] }}
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold">{{ other_user.name }}</div>
+                        <small class="text-success">آنلاین</small>
+                    </div>
+                    <div>
+                        <button class="btn btn-link text-light">
+                            <i class="fas fa-phone"></i>
+                        </button>
+                        <button class="btn btn-link text-light">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="btn btn-link text-light">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- پیام‌ها -->
+                <div class="chat-messages" id="messagesContainer">
+                    {% for message in messages %}
+                    <div class="message {% if message.sender_id == user_id %}message-sent{% else %}message-received{% endif %}">
+                        <div class="message-content">
+                            {{ message.content }}
+                        </div>
+                        <div class="message-time">
+                            {{ message.timestamp.strftime('%H:%M') }}
+                            {% if message.sender_id == user_id %}
+                                {% if message.read %}
+                                    <i class="fas fa-check-double text-info ms-1"></i>
+                                {% else %}
+                                    <i class="fas fa-check ms-1"></i>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- ورودی پیام -->
+                <div class="chat-input">
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-link text-light me-2">
+                            <i class="fas fa-smile"></i>
+                        </button>
+                        <button class="btn btn-link text-light me-2">
+                            <i class="fas fa-paperclip"></i>
+                        </button>
+                        <input type="text" 
+                               class="form-control message-input me-2" 
+                               placeholder="پیام خود را بنویسید..."
+                               id="messageInput"
+                               onkeypress="handleKeyPress(event)">
+                        <button class="btn send-btn" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const chatId = {{ chat_id }};
+        const userId = "{{ user_id }}";
+        
+        // اسکرول به پایین هنگام بارگذاری
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            container.scrollTop = container.scrollHeight;
+        }
+        
+        // ارسال پیام
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const content = messageInput.value.trim();
+            
+            if (!content) return;
+            
+            fetch('/api/send_message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: chatId,
+                    content: content
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // اضافه کردن پیام به لیست
+                    addMessageToChat(data.message);
+                    messageInput.value = '';
+                    scrollToBottom();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        // اضافه کردن پیام به چت
+        function addMessageToChat(message) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message message-sent`;
+            messageDiv.innerHTML = `
+                <div class="message-content">${message.content}</div>
+                <div class="message-time">
+                    ${message.timestamp}
+                    <i class="fas fa-check ms-1"></i>
+                </div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+        }
+        
+        // ارسال با Enter
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        // دریافت پیام‌های جدید
+        function getNewMessages() {
+            fetch(`/api/get_new_messages/${chatId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const messagesContainer = document.getElementById('messagesContainer');
+                        const currentMessageIds = new Set(
+                            Array.from(messagesContainer.querySelectorAll('.message'))
+                                .map(msg => msg.dataset.messageId)
+                                .filter(id => id)
+                        );
+                        
+                        data.messages.forEach(message => {
+                            if (!currentMessageIds.has(message.id.toString())) {
+                                const messageDiv = document.createElement('div');
+                                messageDiv.className = `message ${message.is_me ? 'message-sent' : 'message-received'}`;
+                                messageDiv.dataset.messageId = message.id;
+                                messageDiv.innerHTML = `
+                                    <div class="message-content">${message.content}</div>
+                                    <div class="message-time">
+                                        ${message.timestamp}
+                                        ${message.is_me ? (message.read ? '<i class="fas fa-check-double text-info ms-1"></i>' : '<i class="fas fa-check ms-1"></i>') : ''}
+                                    </div>
+                                `;
+                                messagesContainer.appendChild(messageDiv);
+                            }
+                        });
+                        
+                        scrollToBottom();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+        
+        // آپدیت خودکار هر 2 ثانیه
+        setInterval(getNewMessages, 2000);
+        
+        // اسکرول اولیه
+        scrollToBottom();
+        
+        // فوکوس روی input
+        document.getElementById('messageInput').focus();
+    </script>
+</body>
+</html>
