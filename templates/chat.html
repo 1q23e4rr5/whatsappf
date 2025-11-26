@@ -10,7 +10,7 @@
         body {
             background: #111b21;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e9edef;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن اصلی */
             height: 100vh;
             overflow: hidden;
         }
@@ -54,16 +54,18 @@
             margin-left: auto;
             margin-right: 0;
             border-top-right-radius: 0;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن پیام ارسالی */
         }
         .message-received {
             background: #202c33;
             margin-right: auto;
             margin-left: 0;
             border-top-left-radius: 0;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن پیام دریافتی */
         }
         .message-time {
             font-size: 0.6875rem;
-            color: #8696a0;
+            color: #aebac1; /* 🔥 رنگ روشن‌تر برای زمان */
             text-align: left;
             margin-top: 4px;
         }
@@ -80,6 +82,7 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 1.1em;
         }
         .chat-item {
             border-bottom: 1px solid #2a3942;
@@ -100,6 +103,7 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 1.2em;
         }
         .unread-badge {
             background: #00a884;
@@ -113,23 +117,32 @@
         .search-box {
             background: #202c33;
             border: none;
-            color: #e9edef;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن جستجو */
+            border-radius: 8px;
+        }
+        .search-box::placeholder {
+            color: #aebac1; /* 🔥 رنگ روشن برای placeholder */
         }
         .search-box:focus {
             background: #2a3942;
-            color: #e9edef;
+            color: #ffffff;
             box-shadow: none;
+            border: 1px solid #00a884;
         }
         .message-input {
             background: #2a3942;
             border: none;
-            color: #e9edef;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن ورودی */
             border-radius: 8px;
+        }
+        .message-input::placeholder {
+            color: #aebac1; /* 🔥 رنگ روشن برای placeholder */
         }
         .message-input:focus {
             background: #2a3942;
-            color: #e9edef;
+            color: #ffffff;
             box-shadow: none;
+            border: 1px solid #00a884;
         }
         .send-btn {
             background: #00a884;
@@ -142,6 +155,18 @@
         .chat-list {
             height: calc(100vh - 120px);
             overflow-y: auto;
+        }
+        .chat-name {
+            color: #ffffff; /* 🔥 رنگ سفید برای نام در سایدبار */
+        }
+        .chat-last-message {
+            color: #aebac1; /* 🔥 رنگ روشن‌تر برای آخرین پیام */
+        }
+        .btn-link {
+            color: #aebac1; /* 🔥 رنگ روشن‌تر برای دکمه‌ها */
+        }
+        .btn-link:hover {
+            color: #ffffff;
         }
     </style>
 </head>
@@ -172,15 +197,15 @@
                 <div class="p-3">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control search-box" placeholder="جستجو یا شروع چت جدید" id="searchInput">
-                        <button class="btn btn-outline-secondary" type="button" style="border-color: #2a3942; color: #8696a0;">
+                        <button class="btn btn-outline-secondary" type="button" style="border-color: #2a3942; color: #aebac1;">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                     
                     <!-- فرم شروع چت جدید -->
                     <form method="POST" action="/start_chat" class="d-flex mb-3">
-                        <input type="text" name="user_id" class="form-control search-box me-2" placeholder="شناسه کاربری" required>
-                        <button type="submit" class="btn btn-success">
+                        <input type="text" name="user_id" class="form-control search-box me-2" placeholder="شناسه کاربری مخاطب" required>
+                        <button type="submit" class="btn btn-success" style="background: #00a884; border: none;">
                             <i class="fas fa-plus"></i>
                         </button>
                     </form>
@@ -229,13 +254,13 @@
                         <small class="text-success">آنلاین</small>
                     </div>
                     <div>
-                        <button class="btn btn-link text-light">
+                        <button class="btn btn-link">
                             <i class="fas fa-phone"></i>
                         </button>
-                        <button class="btn btn-link text-light">
+                        <button class="btn btn-link">
                             <i class="fas fa-video"></i>
                         </button>
-                        <button class="btn btn-link text-light">
+                        <button class="btn btn-link">
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                     </div>
@@ -265,10 +290,10 @@
                 <!-- ورودی پیام -->
                 <div class="chat-input">
                     <div class="d-flex align-items-center">
-                        <button class="btn btn-link text-light me-2">
+                        <button class="btn btn-link me-2">
                             <i class="fas fa-smile"></i>
                         </button>
-                        <button class="btn btn-link text-light me-2">
+                        <button class="btn btn-link me-2">
                             <i class="fas fa-paperclip"></i>
                         </button>
                         <input type="text" 
