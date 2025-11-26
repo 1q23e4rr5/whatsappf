@@ -10,7 +10,7 @@
         body {
             background: #111b21;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e9edef;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن اصلی */
             height: 100vh;
             overflow: hidden;
         }
@@ -45,6 +45,7 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 1.2em;
         }
         .chat-info {
             flex: 1;
@@ -52,16 +53,17 @@
         .chat-name {
             font-weight: 500;
             margin-bottom: 2px;
+            color: #ffffff; /* 🔥 رنگ سفید برای نام */
         }
         .chat-last-message {
-            color: #8696a0;
+            color: #aebac1; /* 🔥 رنگ روشن‌تر برای متن آخرین پیام */
             font-size: 0.875rem;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .chat-time {
-            color: #8696a0;
+            color: #aebac1; /* 🔥 رنگ روشن‌تر برای زمان */
             font-size: 0.75rem;
         }
         .unread-badge {
@@ -81,12 +83,17 @@
         .search-box {
             background: #202c33;
             border: none;
-            color: #e9edef;
+            color: #ffffff; /* 🔥 رنگ سفید برای متن جستجو */
+            border-radius: 8px;
+        }
+        .search-box::placeholder {
+            color: #aebac1; /* 🔥 رنگ روشن برای placeholder */
         }
         .search-box:focus {
             background: #2a3942;
-            color: #e9edef;
+            color: #ffffff;
             box-shadow: none;
+            border: 1px solid #00a884;
         }
         .user-avatar {
             width: 40px;
@@ -98,6 +105,29 @@
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 1.1em;
+        }
+        .user-id-display {
+            background: #2a3942;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 0.8em;
+            color: #00a884;
+            border: 1px solid #00a884;
+        }
+        .btn-outline-light {
+            border-color: #aebac1;
+            color: #aebac1;
+        }
+        .btn-outline-light:hover {
+            background: #2a3942;
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+        .alert-success {
+            background: #005c4b;
+            border-color: #00a884;
+            color: #ffffff;
         }
     </style>
 </head>
@@ -117,7 +147,8 @@
                             <small class="text-success">آنلاین</small>
                         </div>
                     </div>
-                    <div>
+                    <div class="d-flex align-items-center">
+                        <span class="user-id-display me-2">{{ user_id }}</span>
                         <a href="/logout" class="btn btn-sm btn-outline-light">
                             <i class="fas fa-sign-out-alt"></i>
                         </a>
@@ -126,17 +157,28 @@
 
                 <!-- جستجو و چت جدید -->
                 <div class="p-3">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% for category, message in messages %}
+                            {% if category == 'success' and 'شناسه' in message %}
+                            <div class="alert alert-success alert-dismissible fade show mb-3">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+
                     <div class="input-group mb-3">
                         <input type="text" class="form-control search-box" placeholder="جستجو یا شروع چت جدید" id="searchInput">
-                        <button class="btn btn-outline-secondary" type="button" style="border-color: #2a3942; color: #8696a0;">
+                        <button class="btn btn-outline-secondary" type="button" style="border-color: #2a3942; color: #aebac1;">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>
                     
                     <!-- فرم شروع چت جدید -->
                     <form method="POST" action="/start_chat" class="d-flex mb-3">
-                        <input type="text" name="user_id" class="form-control search-box me-2" placeholder="شناسه کاربری" required>
-                        <button type="submit" class="btn btn-success">
+                        <input type="text" name="user_id" class="form-control search-box me-2" placeholder="شناسه کاربری مخاطب" required>
+                        <button type="submit" class="btn btn-success" style="background: #00a884; border: none;">
                             <i class="fas fa-plus"></i>
                         </button>
                     </form>
@@ -170,9 +212,9 @@
                     
                     {% if not chats %}
                     <div class="text-center text-muted mt-5">
-                        <i class="fas fa-comments fa-3x mb-3"></i>
-                        <p>هنوز چتی ندارید</p>
-                        <small>برای شروع چت جدید، شناسه کاربری دوست خود را وارد کنید</small>
+                        <i class="fas fa-comments fa-3x mb-3" style="color: #aebac1;"></i>
+                        <p style="color: #aebac1;">هنوز چتی ندارید</p>
+                        <small style="color: #8696a0;">برای شروع چت جدید، شناسه کاربری دوست خود را وارد کنید</small>
                     </div>
                     {% endif %}
                 </div>
@@ -180,10 +222,15 @@
 
             <!-- صفحه اصلی -->
             <div class="col-md-8 col-lg-9 d-flex align-items-center justify-content-center">
-                <div class="text-center text-muted">
+                <div class="text-center" style="color: #aebac1;">
                     <i class="fas fa-comment fa-4x mb-3"></i>
                     <h4>واتساپ وب</h4>
                     <p>برای دیدن چت‌ها، روی یک گفتگو کلیک کنید</p>
+                    <div class="mt-4 p-3" style="background: #2a3942; border-radius: 10px;">
+                        <small>شناسه کاربری شما: <code class="bg-dark text-warning p-1 rounded">{{ user_id }}</code></small>
+                        <br>
+                        <small class="text-muted">این شناسه را به دوستان خود بدهید</small>
+                    </div>
                 </div>
             </div>
         </div>
@@ -193,7 +240,17 @@
     <script>
         // جستجوی کاربر
         document.getElementById('searchInput').addEventListener('input', function(e) {
-            // پیاده‌سازی جستجو
+            const searchTerm = e.target.value.toLowerCase();
+            const chatItems = document.querySelectorAll('.chat-item');
+            
+            chatItems.forEach(item => {
+                const chatName = item.querySelector('.chat-name').textContent.toLowerCase();
+                if (chatName.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
