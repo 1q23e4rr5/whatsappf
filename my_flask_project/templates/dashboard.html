@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}پنل کاربری - {{ name }}{% endblock %}
+
+{% block content %}
+<!-- هدر -->
+<nav class="navbar navbar-expand-lg navbar-dark gradient-bg">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-comments me-2"></i>پیام‌رسان
+        </a>
+        
+        <div class="navbar-nav ms-auto">
+            <span class="navbar-text me-3">
+                <i class="fas fa-user me-1"></i>{{ name }}
+            </span>
+            <a class="btn btn-light btn-sm" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-1"></i>خروج
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- اطلاعات کاربر -->
+    <div class="card card-custom mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h5 class="card-title">خوش آمدید، {{ name }}!</h5>
+                    <p class="card-text">شناسه کاربری شما: <strong>{{ user_id }}</strong></p>
+                    <small class="text-muted">این شناسه را در اختیار دوستان خود قرار دهید</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="{{ url_for('send_message') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-paper-plane me-1"></i>ارسال پیام جدید
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- پیام‌های دریافتی -->
+        <div class="col-lg-6 mb-4">
+            <div class="card card-custom h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-inbox me-2"></i>پیام‌های دریافتی
+                    </h6>
+                    <span class="badge bg-primary">{{ received_messages|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if received_messages %}
+                        {% for message in received_messages %}
+                        <div class="message-item p-3 mb-3 bg-white rounded {% if not message.read %}unread{% endif %}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong class="text-primary">
+                                        <i class="fas fa-user me-1"></i>{{ message.sender_name }}
+                                    </strong>
+                                    <small class="text-muted">({{ message.sender_id }})</small>
+                                </div>
+                                <small class="text-muted">{{ message.timestamp.strftime('%Y/%m/%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-2">{{ message.message }}</p>
+                            {% if not message.read %}
+                            <small class="text-success">
+                                <i class="fas fa-circle me-1"></i>جدید
+                            </small>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-inbox fa-2x mb-3"></i>
+                            <p>هیچ پیامی دریافت نکرده‌اید</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- پیام‌های ارسالی -->
+        <div class="col-lg-6 mb-4">
+            <div class="card card-custom h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-paper-plane me-2"></i>پیام‌های ارسالی
+                    </h6>
+                    <span class="badge bg-success">{{ sent_messages|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if sent_messages %}
+                        {% for message in sent_messages %}
+                        <div class="message-item p-3 mb-3 bg-white rounded">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong class="text-success">
+                                        <i class="fas fa-user me-1"></i>به: {{ message.receiver_id }}
+                                    </strong>
+                                </div>
+                                <small class="text-muted">{{ message.timestamp.strftime('%Y/%m/%d %H:%M') }}</small>
+                            </div>
+                            <p class="mb-2">{{ message.message }}</p>
+                            <small class="text-info">ارسال شده توسط شما</small>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-paper-plane fa-2x mb-3"></i>
+                            <p>هنوز پیامی ارسال نکرده‌اید</p>
+                            <a href="{{ url_for('send_message') }}" class="btn btn-primary btn-sm">
+                                ارسال اولین پیام
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// آپدیت خودکار پیام‌ها هر 10 ثانیه
+setInterval(function() {
+    fetch('/api/messages')
+        .then(response => response.json())
+        .then(data => {
+            if (data.messages && data.messages.length > 0) {
+                location.reload();
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}, 10000);
+</script>
+{% endblock %}

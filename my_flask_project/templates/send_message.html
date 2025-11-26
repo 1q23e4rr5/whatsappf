@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}ارسال پیام جدید{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card card-custom">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-paper-plane me-2"></i>ارسال پیام جدید
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('send_message') }}">
+                        <div class="mb-3">
+                            <label for="receiver_id" class="form-label">شناسه کاربر دریافت‌کننده</label>
+                            <input type="text" class="form-control" id="receiver_id" name="receiver_id" 
+                                   placeholder="شناسه کاربری شخص مورد نظر" required>
+                            <div class="form-text">شناسه کاربری شخصی که می‌خواهید برایش پیام ارسال کنید</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="message" class="form-label">متن پیام</label>
+                            <textarea class="form-control" id="message" name="message" rows="5" 
+                                      placeholder="متن پیام خود را اینجا بنویسید..." required></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-arrow-right me-1"></i>بازگشت
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-1"></i>ارسال پیام
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
