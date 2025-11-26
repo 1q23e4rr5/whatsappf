@@ -16,22 +16,22 @@
                         
                         {% with messages = get_flashed_messages(with_categories=true) %}
                             {% for category, message in messages %}
-                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                                <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }}">
                                     {{ message }}
                                 </div>
                             {% endfor %}
                         {% endwith %}
                         
-                        <form method="POST" action="/login">
+                        <form method="POST" action="/">
                             <div class="mb-3">
                                 <label class="form-label">نام کامل</label>
-                                <input type="text" name="name" class="form-control" required>
+                                <input type="text" name="name" class="form-control" placeholder="نام و نام خانوادگی" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Password</label>
-                                <input type="tel" name="phone" class="form-control" required>
+                                <label class="form-label">شماره تلفن</label>
+                                <input type="tel" name="phone" class="form-control" placeholder="09xxxxxxxxx" required>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">ورود</button>
+                            <button type="submit" class="btn btn-primary w-100">ورود به سامانه</button>
                         </form>
                         
                         <div class="text-center mt-3">
