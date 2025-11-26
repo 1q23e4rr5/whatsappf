@@ -18,13 +18,78 @@
     </nav>
     
     <div class="container mt-4">
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
-                <h4>خوش آمدید، {{ name }}!</h4>
-                <p>شناسه کاربری شما: <strong>{{ user_id }}</strong></p>
-                <a href="/send_message" class="btn btn-success">ارسال پیام جدید</a>
+                <h4>خوش آمدید، {{ name }}! 👋</h4>
+                <p class="mb-1">شناسه کاربری شما: <strong>{{ user_id }}</strong></p>
+                <small class="text-muted">این شناسه را در اختیار دوستان خود قرار دهید تا بتوانند برای شما پیام ارسال کنند</small>
+                <div class="mt-3">
+                    <a href="/send_message" class="btn btn-success">📨 ارسال پیام جدید</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📥 پیام‌های دریافتی</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if received_messages %}
+                            {% for message in received_messages %}
+                            <div class="border-start border-primary ps-3 mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>{{ message.sender_name }}</strong>
+                                    <small class="text-muted">{{ message.timestamp.strftime('%H:%M') }}</small>
+                                </div>
+                                <p class="mb-1">{{ message.message }}</p>
+                                <small class="text-muted">({{ message.sender_id }})</small>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">هیچ پیامی دریافت نکرده‌اید</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">📤 پیام‌های ارسالی</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if sent_messages %}
+                            {% for message in sent_messages %}
+                            <div class="border-start border-success ps-3 mb-3">
+                                <div class="d-flex justify-content-between">
+                                    <strong>به: {{ message.receiver_id }}</strong>
+                                    <small class="text-muted">{{ message.timestamp.strftime('%H:%M') }}</small>
+                                </div>
+                                <p class="mb-1">{{ message.message }}</p>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">هنوز پیامی ارسال نکرده‌اید</p>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+    <script>
+    // آپدیت خودکار پیام‌ها
+    setInterval(function() {
+        fetch('/api/messages')
+            .then(response => response.json())
+            .then(data => {
+                if (data.messages && data.messages.length > 0) {
+                    location.reload();
+                }
+            });
+    }, 5000);
+    </script>
 </body>
 </html>
