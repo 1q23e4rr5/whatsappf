@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Web - پیام‌رسان جهانی</title>
+    <title>MailGram - پیام‌رسان امن</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💬</text></svg>">
     <style>
         :root {
-            --whatsapp-green: #00a884;
-            --whatsapp-dark: #111b21;
-            --whatsapp-light: #e9edef;
-            --whatsapp-secondary: #8696a0;
+            --primary-color: #0088cc;
+            --secondary-color: #f8f9fa;
+            --accent-color: #25d366;
         }
         
         body {
-            background: linear-gradient(135deg, var(--whatsapp-green) 0%, #128c7e 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, #005580 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             height: 100vh;
             display: flex;
@@ -28,7 +26,7 @@
         
         .login-container {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 450px;
@@ -48,29 +46,11 @@
         }
         
         .login-header {
-            background: var(--whatsapp-green);
+            background: var(--primary-color);
             color: white;
             padding: 40px 30px;
             text-align: center;
             position: relative;
-            overflow: hidden;
-        }
-        
-        .login-header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 20px 20px;
-            animation: float 20s infinite linear;
-        }
-        
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-20px, -20px) rotate(360deg); }
         }
         
         .logo {
@@ -92,37 +72,39 @@
         
         .form-control {
             border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            padding: 12px 15px;
+            border-radius: 10px;
+            padding: 15px;
             font-size: 16px;
             transition: all 0.3s ease;
+            margin-bottom: 15px;
         }
         
         .form-control:focus {
-            border-color: var(--whatsapp-green);
-            box-shadow: 0 0 0 0.2rem rgba(0, 168, 132, 0.25);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 136, 204, 0.25);
         }
         
-        .btn-whatsapp {
-            background: var(--whatsapp-green);
+        .btn-primary {
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 15px;
             font-weight: 600;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             transition: all 0.3s ease;
+            width: 100%;
         }
         
-        .btn-whatsapp:hover {
-            background: #008f74;
+        .btn-primary:hover {
+            background: #006699;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 168, 132, 0.4);
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.4);
         }
         
         .user-id-display {
-            background: #f8f9fa;
-            border: 2px dashed var(--whatsapp-green);
+            background: #e8f4fd;
+            border: 2px dashed var(--primary-color);
             border-radius: 10px;
             padding: 20px;
             margin: 20px 0;
@@ -142,7 +124,7 @@
             border: 1px solid #ffcc80;
         }
         
-        .features {
+        .security-features {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
@@ -152,14 +134,14 @@
         .feature-item {
             text-align: center;
             padding: 15px;
-            background: #f8f9fa;
+            background: var(--secondary-color);
             border-radius: 8px;
             border: 1px solid #e9ecef;
         }
         
         .feature-icon {
             font-size: 1.5em;
-            color: var(--whatsapp-green);
+            color: var(--primary-color);
             margin-bottom: 8px;
         }
         
@@ -167,12 +149,21 @@
             border-top: 1px solid #e9ecef;
             padding-top: 20px;
             margin-top: 20px;
+            text-align: center;
         }
         
-        .language-selector {
-            position: absolute;
-            top: 15px;
-            left: 15px;
+        .password-strength {
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
         }
         
         @media (max-width: 768px) {
@@ -180,7 +171,7 @@
                 margin: 10px;
             }
             
-            .features {
+            .security-features {
                 grid-template-columns: 1fr;
             }
             
@@ -202,14 +193,19 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+        
+        .alert {
+            border-radius: 10px;
+            border: none;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-header">
-            <i class="fab fa-whatsapp logo"></i>
-            <h2 class="fw-bold">WhatsApp Web</h2>
-            <p class="mb-0">پیام‌رسان جهانی - ارتباط بدون مرز</p>
+            <i class="fas fa-paper-plane logo"></i>
+            <h2 class="fw-bold">MailGram</h2>
+            <p class="mb-0">پیام‌رسان امن و سریع</p>
         </div>
         
         <div class="login-body">
@@ -224,7 +220,7 @@
                                     <div class="user-id-display mt-3">
                                         <strong>🔑 شناسه کاربری شما:</strong>
                                         <div class="user-id pulse">{{ message.split(':')[-1].strip() }}</div>
-                                        <small class="text-muted">این شناسه را به دوستان خود بدهید تا بتوانند با شما چت کنند</small>
+                                        <small class="text-muted">این شناسه را به دوستان خود بدهید</small>
                                     </div>
                                 {% endif %}
                             </div>
@@ -235,38 +231,47 @@
             {% endwith %}
             
             <form method="POST" action="/login" id="loginForm">
-                <div class="mb-4">
-                    <label class="form-label fw-semibold">👤 نام کامل شما</label>
-                    <input type="text" name="name" class="form-control" placeholder="نام و نام خانوادگی خود را وارد کنید" required maxlength="50">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">👤 نام کامل</label>
+                    <input type="text" name="name" class="form-control" placeholder="نام و نام خانوادگی" required maxlength="50">
                 </div>
                 
-                <div class="mb-4">
+                <div class="mb-3">
                     <label class="form-label fw-semibold">📞 شماره تلفن</label>
                     <input type="tel" name="phone" class="form-control" placeholder="09123456789" required pattern="[0-9]{10,15}">
                     <div class="form-text">شماره تلفن باید حداقل 10 رقم باشد</div>
                 </div>
                 
-                <button type="submit" class="btn btn-whatsapp w-100 btn-lg">
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">🔒 رمز عبور</label>
+                    <input type="password" name="password" class="form-control" placeholder="رمز عبور خود را وارد کنید" required minlength="4" id="passwordInput">
+                    <div class="form-text">رمز عبور باید حداقل 4 کاراکتر باشد</div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
                     <i class="fas fa-sign-in-alt me-2"></i>
-                    ورود به واتساپ
+                    ورود به MailGram
                 </button>
             </form>
             
-            <div class="features">
-                <div class="feature-item">
-                    <div class="feature-icon">
-                        <i class="fas fa-globe"></i>
-                    </div>
-                    <div class="feature-text">
-                        <small>دسترسی جهانی</small>
-                    </div>
-                </div>
+            <div class="security-features">
                 <div class="feature-item">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt"></i>
                     </div>
                     <div class="feature-text">
-                        <small>امنیت بالا</small>
+                        <small>رمزنگاری پیشرفته</small>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="feature-text">
+                        <small>تأیید هویت</small>
                     </div>
                 </div>
                 <div class="feature-item">
@@ -287,7 +292,7 @@
                 </div>
             </div>
             
-            <div class="admin-link text-center">
+            <div class="admin-link">
                 <a href="/admin_login" class="text-muted text-decoration-none">
                     <i class="fas fa-cog me-1"></i>
                     ورود مدیران سیستم
@@ -301,10 +306,40 @@
         // اعتبارسنجی فرم
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const phone = document.querySelector('input[name="phone"]').value;
+            const password = document.getElementById('passwordInput').value;
+            
             if (phone.length < 10) {
                 e.preventDefault();
                 alert('شماره تلفن باید حداقل 10 رقم باشد');
                 return false;
+            }
+            
+            if (password.length < 4) {
+                e.preventDefault();
+                alert('رمز عبور باید حداقل 4 کاراکتر باشد');
+                return false;
+            }
+        });
+        
+        // نمایش قدرت رمز عبور
+        document.getElementById('passwordInput').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('strengthBar');
+            let strength = 0;
+            
+            if (password.length >= 4) strength += 25;
+            if (password.length >= 6) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password)) strength += 25;
+            
+            strengthBar.style.width = strength + '%';
+            
+            if (strength < 50) {
+                strengthBar.style.background = '#dc3545';
+            } else if (strength < 75) {
+                strengthBar.style.background = '#ffc107';
+            } else {
+                strengthBar.style.background = '#28a745';
             }
         });
         
