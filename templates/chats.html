@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>چت‌ها - WhatsApp Web</title>
+    <title>چت‌ها - MailGram</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --whatsapp-dark: #111b21;
-            --whatsapp-header: #202c33;
-            --whatsapp-secondary: #2a3942;
-            --whatsapp-green: #00a884;
-            --text-primary: #ffffff;
-            --text-secondary: #aebac1;
-            --text-muted: #8696a0;
+            --primary-color: #0088cc;
+            --secondary-color: #f0f2f5;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
         }
         
         body {
-            background: var(--whatsapp-dark);
+            background: var(--secondary-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: var(--text-primary);
             height: 100vh;
@@ -33,110 +31,138 @@
         
         /* سایدبار */
         .sidebar {
-            background: var(--whatsapp-header);
-            border-right: 1px solid var(--whatsapp-secondary);
+            background: white;
+            border-left: 1px solid var(--border-color);
             width: 400px;
             min-width: 400px;
             display: flex;
             flex-direction: column;
             height: 100%;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
         
         /* هدر کاربر */
         .user-header {
-            background: var(--whatsapp-secondary);
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--whatsapp-secondary);
+            background: var(--primary-color);
+            padding: 20px;
+            color: white;
         }
         
         .user-avatar {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: var(--whatsapp-green);
+            background: rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
             font-size: 1.2em;
-            border: 2px solid var(--whatsapp-green);
+            border: 2px solid rgba(255,255,255,0.3);
         }
         
         .user-id-badge {
-            background: rgba(0, 168, 132, 0.2);
-            border: 1px solid var(--whatsapp-green);
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
             border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.75em;
-            color: var(--whatsapp-green);
+            padding: 6px 12px;
+            font-size: 0.8em;
+            color: white;
             font-family: 'Courier New', monospace;
         }
         
-        /* بخش جستجو */
-        .search-section {
-            padding: 16px;
-            border-bottom: 1px solid var(--whatsapp-secondary);
+        /* بخش جستجو و اقدامات */
+        .actions-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
         }
         
         .search-box {
-            background: var(--whatsapp-secondary);
+            background: var(--secondary-color);
             border: none;
             color: var(--text-primary);
-            border-radius: 8px;
-            padding: 12px 16px;
+            border-radius: 20px;
+            padding: 12px 20px;
             font-size: 14px;
         }
         
         .search-box::placeholder {
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
         
         .search-box:focus {
-            background: var(--whatsapp-secondary);
+            background: var(--secondary-color);
             color: var(--text-primary);
             box-shadow: none;
-            border: 1px solid var(--whatsapp-green);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            background: var(--secondary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .action-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
         }
         
         /* لیست چت‌ها */
         .chats-list {
             flex: 1;
             overflow-y: auto;
-            background: var(--whatsapp-header);
+            background: white;
         }
         
         .chat-item {
             display: flex;
             align-items: center;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--whatsapp-secondary);
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
             cursor: pointer;
             transition: background 0.2s ease;
             position: relative;
         }
         
         .chat-item:hover {
-            background: var(--whatsapp-secondary);
+            background: var(--secondary-color);
         }
         
         .chat-item.active {
-            background: var(--whatsapp-secondary);
+            background: var(--secondary-color);
         }
         
         .chat-avatar {
-            width: 52px;
-            height: 52px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background: var(--whatsapp-green);
+            background: var(--primary-color);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 1.3em;
-            margin-left: 12px;
+            font-size: 1.2em;
+            margin-left: 15px;
             flex-shrink: 0;
+        }
+        
+        .group-avatar {
+            background: #10b981;
         }
         
         .chat-info {
@@ -148,11 +174,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 5px;
         }
         
         .chat-name {
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-primary);
             font-size: 16px;
             white-space: nowrap;
@@ -161,10 +187,9 @@
         }
         
         .chat-time {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             font-size: 0.75em;
             flex-shrink: 0;
-            margin-right: 8px;
         }
         
         .chat-preview {
@@ -183,27 +208,26 @@
         }
         
         .unread-badge {
-            background: var(--whatsapp-green);
+            background: var(--primary-color);
             color: white;
             border-radius: 10px;
-            padding: 2px 6px;
+            padding: 2px 8px;
             font-size: 0.75em;
             min-width: 18px;
             text-align: center;
             font-weight: 600;
             flex-shrink: 0;
-            margin-right: 8px;
         }
         
         .online-status {
-            width: 8px;
-            height: 8px;
-            background: var(--whatsapp-green);
+            width: 10px;
+            height: 10px;
+            background: #10b981;
             border-radius: 50%;
             position: absolute;
             top: 50px;
-            right: 68px;
-            border: 2px solid var(--whatsapp-header);
+            right: 65px;
+            border: 2px solid white;
         }
         
         /* صفحه اصلی */
@@ -212,7 +236,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--whatsapp-dark);
+            background: var(--secondary-color);
             position: relative;
             overflow: hidden;
         }
@@ -225,7 +249,7 @@
         
         .welcome-icon {
             font-size: 5rem;
-            color: var(--whatsapp-green);
+            color: var(--primary-color);
             margin-bottom: 20px;
             opacity: 0.7;
         }
@@ -245,20 +269,12 @@
         }
         
         .user-id-card {
-            background: var(--whatsapp-secondary);
+            background: white;
             border-radius: 12px;
-            padding: 20px;
+            padding: 25px;
             margin-top: 30px;
-            border: 1px solid var(--whatsapp-green);
-        }
-        
-        /* فرم شروع چت جدید */
-        .new-chat-form {
-            background: var(--whatsapp-secondary);
-            border-radius: 8px;
-            padding: 15px;
-            margin: 16px;
-            border: 1px solid var(--whatsapp-green);
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
         
         /* اسکرول بار */
@@ -267,16 +283,16 @@
         }
         
         .chats-list::-webkit-scrollbar-track {
-            background: var(--whatsapp-header);
+            background: #f1f1f1;
         }
         
         .chats-list::-webkit-scrollbar-thumb {
-            background: var(--whatsapp-secondary);
+            background: var(--primary-color);
             border-radius: 3px;
         }
         
         .chats-list::-webkit-scrollbar-thumb:hover {
-            background: var(--text-muted);
+            background: #006699;
         }
         
         /* انیمیشن */
@@ -313,14 +329,18 @@
             opacity: 0.5;
         }
         
-        .pulse-online {
-            animation: pulse 2s infinite;
+        .section-title {
+            padding: 15px 20px;
+            background: var(--secondary-color);
+            color: var(--text-primary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
         }
         
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
     </style>
 </head>
@@ -337,21 +357,21 @@
                     <div>
                         <div class="fw-bold">{{ user_name }}</div>
                         <div class="d-flex align-items-center">
-                            <div class="online-status pulse-online"></div>
-                            <small class="text-success">آنلاین</small>
+                            <div class="online-status"></div>
+                            <small>آنلاین</small>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <span class="user-id-badge me-2">{{ user_id }}</span>
-                    <a href="/logout" class="btn btn-sm text-light" title="خروج">
+                    <a href="/logout" class="btn btn-sm text-white">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </div>
             </div>
 
-            <!-- بخش جستجو و چت جدید -->
-            <div class="search-section">
+            <!-- بخش جستجو و اقدامات -->
+            <div class="actions-section">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% for category, message in messages %}
                         {% if category == 'success' and 'شناسه' in message %}
@@ -360,25 +380,34 @@
                                 <i class="fas fa-check-circle me-2"></i>
                                 <div>{{ message }}</div>
                             </div>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
                         {% endif %}
                     {% endfor %}
                 {% endwith %}
 
-                <form method="POST" action="/start_chat" class="new-chat-form">
-                    <div class="input-group">
-                        <input type="text" name="user_id" class="form-control search-box" placeholder="شناسه کاربری مخاطب" required>
-                        <button type="submit" class="btn text-light" style="background: var(--whatsapp-green);">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                    <small class="text-muted mt-2 d-block">شناسه کاربری دوست خود را وارد کنید</small>
-                </form>
+                <!-- دکمه‌های اقدام -->
+                <div class="action-buttons">
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#startChatModal">
+                        <i class="fas fa-comment me-1"></i>
+                        چت جدید
+                    </button>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#createGroupModal">
+                        <i class="fas fa-users me-1"></i>
+                        گروه جدید
+                    </button>
+                    <button class="action-btn" data-bs-toggle="modal" data-bs-target="#joinGroupModal">
+                        <i class="fas fa-user-plus me-1"></i>
+                        پیوستن به گروه
+                    </button>
+                </div>
             </div>
 
             <!-- لیست چت‌ها -->
             <div class="chats-list">
+                <!-- چت‌های خصوصی -->
+                {% if chats %}
+                <div class="section-title">چت‌های خصوصی</div>
                 {% for chat in chats %}
                 <div class="chat-item" onclick="location.href='/chat/{{ chat.other_user.user_id }}'">
                     <div class="chat-avatar">
@@ -407,12 +436,40 @@
                     </div>
                 </div>
                 {% endfor %}
+                {% endif %}
                 
-                {% if not chats %}
+                <!-- گروه‌ها -->
+                {% if groups %}
+                <div class="section-title">گروه‌ها</div>
+                {% for group in groups %}
+                <div class="chat-item" onclick="location.href='/group/{{ group.group_id }}'">
+                    <div class="chat-avatar group-avatar">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-header">
+                            <div class="chat-name">{{ group.name }}</div>
+                            <div class="chat-time">{{ group.last_message.timestamp }}</div>
+                        </div>
+                        <div class="chat-preview">
+                            <div class="chat-last-message">
+                                {% if group.last_message.sender_name %}
+                                    {{ group.last_message.sender_name }}: {{ group.last_message.content }}
+                                {% else %}
+                                    {{ group.last_message.content }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                
+                {% if not chats and not groups %}
                 <div class="empty-state">
                     <i class="fas fa-comments"></i>
                     <h4>هنوز چتی ندارید</h4>
-                    <p>برای شروع چت جدید، شناسه کاربری دوست خود را وارد کنید</p>
+                    <p>برای شروع چت جدید، روی دکمه "چت جدید" کلیک کنید</p>
                 </div>
                 {% endif %}
             </div>
@@ -422,24 +479,91 @@
         <div class="main-content">
             <div class="welcome-section">
                 <div class="welcome-icon">
-                    <i class="fab fa-whatsapp"></i>
+                    <i class="fas fa-paper-plane"></i>
                 </div>
-                <h1 class="welcome-title">WhatsApp Web</h1>
+                <h1 class="welcome-title">MailGram</h1>
                 <p class="welcome-subtitle">
                     برای شروع گفتگو، روی یکی از چت‌های موجود کلیک کنید یا چت جدیدی را شروع کنید
                 </p>
                 
                 <div class="user-id-card">
-                    <h6 class="text-success mb-3">
+                    <h6 class="text-primary mb-3">
                         <i class="fas fa-id-card me-2"></i>شناسه کاربری شما
                     </h6>
-                    <div class="bg-dark rounded p-3 mb-3">
-                        <code class="text-warning fs-5">{{ user_id }}</code>
+                    <div class="bg-light rounded p-3 mb-3">
+                        <code class="text-dark fs-5">{{ user_id }}</code>
                     </div>
                     <small class="text-muted">
                         <i class="fas fa-info-circle me-1"></i>
                         این شناسه را به دوستان خود بدهید تا بتوانند با شما چت کنند
                     </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال شروع چت جدید -->
+    <div class="modal fade" id="startChatModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">شروع چت جدید</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/start_chat">
+                        <div class="mb-3">
+                            <label class="form-label">شناسه کاربری مخاطب</label>
+                            <input type="text" name="user_id" class="form-control" placeholder="شناسه کاربری را وارد کنید" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">شروع چت</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال ایجاد گروه -->
+    <div class="modal fade" id="createGroupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">ایجاد گروه جدید</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/create_group">
+                        <div class="mb-3">
+                            <label class="form-label">نام گروه</label>
+                            <input type="text" name="name" class="form-control" placeholder="نام گروه را وارد کنید" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">توضیحات (اختیاری)</label>
+                            <textarea name="description" class="form-control" placeholder="توضیحات گروه" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">ایجاد گروه</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- مودال پیوستن به گروه -->
+    <div class="modal fade" id="joinGroupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">پیوستن به گروه</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/join_group">
+                        <div class="mb-3">
+                            <label class="form-label">شناسه گروه</label>
+                            <input type="text" name="group_id" class="form-control" placeholder="شناسه گروه را وارد کنید" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">پیوستن به گروه</button>
+                    </form>
                 </div>
             </div>
         </div>
